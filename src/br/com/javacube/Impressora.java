@@ -2,52 +2,6 @@ package br.com.javacube;
 
 public class Impressora {
 
-    public String getLinha(int[][] m, int linha) {
-        String ret = "";
-        for (int i = 0; i < 3; i++) {
-            ret += m[linha][i] + " ";
-        }
-        return ret;
-    }
-
-    public String getLinhaInv(int[][] m, int linha) {
-        String ret = "";
-        for (int i = 0; i < 3; i++) {
-            ret += m[linha][i] + " ";
-        }
-        return inverter(ret);
-    }
-
-    public String getCol(int[][] m, int col) {
-        String ret = "";
-        for (int i = 0; i < 3; i++) {
-            ret += m[i][col] + " ";
-        }
-        return ret;
-    }
-
-    public String getColInv(int[][] m, int col) {
-        String ret = "";
-        for (int i = 0; i < 3; i++) {
-            ret += m[i][col] + " ";
-        }
-        return inverter(ret);
-    }
-
-    public String inverter(String seq) {
-        String[] validData = seq.split(" ");
-        for (int i = 0; i < validData.length / 2; i++) {
-            String temp = validData[i];
-            validData[i] = validData[validData.length - i - 1];
-            validData[validData.length - i - 1] = temp;
-        }
-        seq = "";
-        for (String s : validData) {
-            seq += s + " ";
-        }
-        return seq;
-    }
-
     public void printarEstado(Cubo c) {
         String space = "       ";
         String horizontal = "--------";
@@ -91,6 +45,52 @@ public class Impressora {
             System.out.println("--------");
         }
         System.out.println("==============");
+    }
+
+    public String getLinha(int[][] m, int linha) {
+        String ret = "";
+        for (int i = 0; i < 3; i++) {
+            ret += m[linha][i] + " ";
+        }
+        return ret;
+    }
+
+    public String getLinhaInv(int[][] m, int linha) {
+        String ret = "";
+        for (int i = 0; i < 3; i++) {
+            ret += m[linha][i] + " ";
+        }
+        return inverter(ret);
+    }
+
+    public String getCol(int[][] m, int col) {
+        String ret = "";
+        for (int i = 0; i < 3; i++) {
+            ret += m[i][col] + " ";
+        }
+        return ret;
+    }
+
+    public String getColInv(int[][] m, int col) {
+        String ret = "";
+        for (int i = 0; i < 3; i++) {
+            ret += m[i][col] + " ";
+        }
+        return inverter(ret);
+    }
+
+    public String inverter(String sequencia) {
+        String[] vetor = sequencia.split(" ");
+        for (int i = 0; i < vetor.length / 2; i++) {
+            String temp = vetor[i];
+            vetor[i] = vetor[vetor.length - i - 1];
+            vetor[vetor.length - i - 1] = temp;
+        }
+        sequencia = "";
+        for (String s : vetor) {
+            sequencia += s + " ";
+        }
+        return sequencia;
     }
 
 }

@@ -9,4 +9,6 @@ public class Utils {
         int randomNum = rand.nextInt((max - min) + 1) + min;
         return randomNum;
     }
+
+
 }

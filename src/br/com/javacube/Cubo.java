@@ -6,35 +6,46 @@ import java.util.HashMap;
 public class Cubo {
 
     private Impressora imp;
-    private int[][] fantasma;
+    private int[][] temp;
     private ArrayList<int[][]> cores;
-        private ArrayList<Integer> coresAdd;
+    private ArrayList<Integer> coresAdd;
     private HashMap<String, Integer> matrizes;
     private final String[] NOMES = {"D", "U", "R", "L", "B", "F"};
 
+    //Construtores
     public Cubo() {
-        imp = new Impressora();
-        cores = new ArrayList<>();
-        matrizes = new HashMap<>();
-        coresAdd = new ArrayList<>();
+        this.imp = new Impressora();
+        this.cores = new ArrayList<>();
+        this.matrizes = new HashMap<>();
+        this.coresAdd = new ArrayList<>();
     }
 
-    public void print() {
-        imp.printarEstado(this);
+    //Getters
+    public String getNomeFace(int pos) {
+        return this.NOMES[pos];
+    }
+
+    public String getNomeDirecao(int pos) {
+        if (pos == 0) {
+            return "H";
+        } else {
+            return "A";
+        }
     }
 
     public ArrayList<int[][]> getCores() {
-        return cores;
+        return this.cores;
     }
 
+    //População
     public void populaRandom() {
         for (int i = 0; i < 6; i++) {
-            cores.add(new int[3][3]);
-            matrizes.put(NOMES[i], i);
+            this.cores.add(new int[3][3]);
+            this.matrizes.put(this.NOMES[i], i);
         }
 
-        for (int i = 0; i < cores.size(); i++) {
-            int[][] m = cores.get(i); //face
+        for (int i = 0; i < this.cores.size(); i++) {
+            int[][] m = this.cores.get(i); //face
             for (int j = 0; j < 3; j++) { //linha
                 for (int k = 0; k < 3; k++) { //coluna
                     int r = Utils.randInt(1, 6); //gera cor
@@ -46,20 +57,20 @@ public class Cubo {
         }
     }
 
-    public void populaOrganizado() {
+    public void populaResolvido() {
         for (int i = 0; i < 6; i++) {
-            cores.add(new int[3][3]);
-            matrizes.put(NOMES[i], i);
+            this.cores.add(new int[3][3]);
+            this.matrizes.put(this.NOMES[i], i);
         }
 
-        for (int i = 0; i < cores.size(); i++) {
-            int[][] m = cores.get(i); //face
+        for (int i = 0; i < this.cores.size(); i++) {
+            int[][] m = this.cores.get(i); //face
             int r = Utils.randInt(1, 6); //gera cor
             if (verificaCor(r)) {
                 for (int j = 0; j < 3; j++) { //linha
                     for (int k = 0; k < 3; k++) { //coluna
                         m[j][k] = r;
-                        coresAdd.add(r);
+                        this.coresAdd.add(r);
                     }
                 }
             } else {
@@ -69,13 +80,14 @@ public class Cubo {
     }
 
     public void populaTeste() {
+        //Atenção: Método de teste de alinhamento das faces do cubo, não utilizar na prática
         for (int i = 0; i < 6; i++) {
-            cores.add(new int[3][3]);
-            matrizes.put(NOMES[i], i);
+            this.cores.add(new int[3][3]);
+            this.matrizes.put(this.NOMES[i], i);
         }
 
-        for (int i = 0; i < cores.size(); i++) {
-            int[][] m = cores.get(i); //face
+        for (int i = 0; i < this.cores.size(); i++) {
+            int[][] m = this.cores.get(i); //face
             int r = 1;
             for (int j = 0; j < 3; j++) { //linha
                 for (int k = 0; k < 3; k++) { //coluna
@@ -85,18 +97,7 @@ public class Cubo {
         }
     }
 
-    public boolean verificaCor(int cor) {
-        int count = 0;
-        for (int c : coresAdd) {
-            if (c == cor) {
-                count++;
-            }
-        }
-        return count < 9;
-    }
-
-    //TODO: fazer movimento anti-horário tbm
-    //U, D, R, L, B: revisados
+    //Movimento
     public void mover(String face, String direcao) {
         switch (direcao) {
             case "H":
@@ -114,40 +115,40 @@ public class Cubo {
     public void moverHor(String mov) {
         switch (mov) {
             case "D":
-                fantasma = passaLinha(gMat("F"), gMat("R"), 2);
-                fantasma = passaLinha(fantasma, gMat("B"), 2);
-                fantasma = passaLinha(fantasma, gMat("L"), 2);
-                passaLinha(fantasma, gMat("F"), 2);
+                this.temp = passaLinha(gMat("F"), gMat("R"), 2);
+                this.temp = passaLinha(this.temp, gMat("B"), 2);
+                this.temp = passaLinha(this.temp, gMat("L"), 2);
+                passaLinha(this.temp, gMat("F"), 2);
                 break;
             case "U":
-                fantasma = passaLinha(gMat("F"), gMat("L"), 0);
-                fantasma = passaLinha(fantasma, gMat("B"), 0);
-                fantasma = passaLinha(fantasma, gMat("R"), 0);
-                passaLinha(fantasma, gMat("F"), 0);
+                this.temp = passaLinha(gMat("F"), gMat("L"), 0);
+                this.temp = passaLinha(this.temp, gMat("B"), 0);
+                this.temp = passaLinha(this.temp, gMat("R"), 0);
+                passaLinha(this.temp, gMat("F"), 0);
                 break;
             case "R":
-                fantasma = passaColuna(gMat("F"), gMat("U"), 2);
-                fantasma = passaColuna(fantasma, gMat("B"), 2, 0); //COL[2] U --> COL[0] B
-                fantasma = passaColuna(fantasma, gMat("D"), 0, 2); //COL[0] B --> COL[2] D
-                passaColuna(fantasma, gMat("F"), 2);
+                this.temp = passaColuna(gMat("F"), gMat("U"), 2);
+                this.temp = passaColuna(this.temp, gMat("B"), 2, 0); //COL[2] U --> COL[0] B
+                this.temp = passaColuna(this.temp, gMat("D"), 0, 2); //COL[0] B --> COL[2] D
+                passaColuna(this.temp, gMat("F"), 2);
                 break;
             case "L":
-                fantasma = passaColuna(gMat("F"), gMat("D"), 0);
-                fantasma = passaColuna(fantasma, gMat("B"), 0, 2); //COL[0] D --> COL[2] B
-                fantasma = passaColuna(fantasma, gMat("U"), 2, 0); //COL[2] B --> COL[0] U
-                passaColuna(fantasma, gMat("F"), 0);
+                this.temp = passaColuna(gMat("F"), gMat("D"), 0);
+                this.temp = passaColuna(this.temp, gMat("B"), 0, 2); //COL[0] D --> COL[2] B
+                this.temp = passaColuna(this.temp, gMat("U"), 2, 0); //COL[2] B --> COL[0] U
+                passaColuna(this.temp, gMat("F"), 0);
                 break;
             case "B":
-                fantasma = tColLin(gMat("R"), gMat("U"), 2, 2); //COL[2] R --> LIN[2] U
-                fantasma = tLinCol(fantasma, gMat("L"), 2, 0); //LIN[2] U --> COL[0] L
-                fantasma = tColLin(fantasma, gMat("D"), 0, 2); //COL[0] L --> LIN[2] D
-                tLinCol(fantasma, gMat("R"), 2, 2); //LIN[2] D --> COL[2] R
+                this.temp = tColLin(gMat("R"), gMat("U"), 2, 2); //COL[2] R --> LIN[2] U
+                this.temp = tLinCol(this.temp, gMat("L"), 2, 0); //LIN[2] U --> COL[0] L
+                this.temp = tColLin(this.temp, gMat("D"), 0, 2); //COL[0] L --> LIN[2] D
+                tLinCol(this.temp, gMat("R"), 2, 2); //LIN[2] D --> COL[2] R
                 break;
             case "F":
-                fantasma = tColLin(gMat("R"), gMat("D"), 0, 0); //COL[0] R --> LIN[0] D 
-                fantasma = tLinCol(fantasma, gMat("L"), 0, 2); //LIN[0] D --> COL[2] L
-                fantasma = tColLin(fantasma, gMat("U"), 2, 0); //COL[2] L --> LIN[0] U
-                tLinCol(fantasma, gMat("R"), 0, 0); //LIN[0] U --> COL[0] R
+                this.temp = tColLin(gMat("R"), gMat("D"), 0, 0); //COL[0] R --> LIN[0] D 
+                this.temp = tLinCol(this.temp, gMat("L"), 0, 2); //LIN[0] D --> COL[2] L
+                this.temp = tColLin(this.temp, gMat("U"), 2, 0); //COL[2] L --> LIN[0] U
+                tLinCol(this.temp, gMat("R"), 0, 0); //LIN[0] U --> COL[0] R
                 break;
         }
     }
@@ -155,49 +156,98 @@ public class Cubo {
     public void moverAntihor(String mov) {
         switch (mov) {
             case "D":
-                fantasma = passaLinha(gMat("F"), gMat("L"), 2);
-                fantasma = passaLinha(fantasma, gMat("B"), 2);
-                fantasma = passaLinha(fantasma, gMat("R"), 2);
-                passaLinha(fantasma, gMat("F"), 2);
+                this.temp = passaLinha(gMat("F"), gMat("L"), 2);
+                this.temp = passaLinha(this.temp, gMat("B"), 2);
+                this.temp = passaLinha(this.temp, gMat("R"), 2);
+                passaLinha(this.temp, gMat("F"), 2);
                 break;
             case "U":
-                fantasma = passaLinha(gMat("F"), gMat("R"), 0);
-                fantasma = passaLinha(fantasma, gMat("B"), 0);
-                fantasma = passaLinha(fantasma, gMat("L"), 0);
-                passaLinha(fantasma, gMat("F"), 0);
+                this.temp = passaLinha(gMat("F"), gMat("R"), 0);
+                this.temp = passaLinha(this.temp, gMat("B"), 0);
+                this.temp = passaLinha(this.temp, gMat("L"), 0);
+                passaLinha(this.temp, gMat("F"), 0);
                 break;
             case "R":
-                fantasma = passaColuna(gMat("F"), gMat("D"), 2);
-                fantasma = passaColuna(fantasma, gMat("B"), 2, 0); //COL[2] D --> COL[0] B
-                fantasma = passaColuna(fantasma, gMat("U"), 0, 2); //COL[0] B --> COL[2] U
-                passaColuna(fantasma, gMat("F"), 2);
+                this.temp = passaColuna(gMat("F"), gMat("D"), 2);
+                this.temp = passaColuna(this.temp, gMat("B"), 2, 0); //COL[2] D --> COL[0] B
+                this.temp = passaColuna(this.temp, gMat("U"), 0, 2); //COL[0] B --> COL[2] U
+                passaColuna(this.temp, gMat("F"), 2);
                 break;
             case "L":
-                fantasma = passaColuna(gMat("F"), gMat("U"), 0);
-                fantasma = passaColuna(fantasma, gMat("B"), 0, 2); //COL[0] U --> COL[2] B
-                fantasma = passaColuna(fantasma, gMat("D"), 2, 0); //COL[2] B --> COL[0] D
-                passaColuna(fantasma, gMat("F"), 0);
+                this.temp = passaColuna(gMat("F"), gMat("U"), 0);
+                this.temp = passaColuna(this.temp, gMat("B"), 0, 2); //COL[0] U --> COL[2] B
+                this.temp = passaColuna(this.temp, gMat("D"), 2, 0); //COL[2] B --> COL[0] D
+                passaColuna(this.temp, gMat("F"), 0);
                 break;
             case "B":
-                fantasma = tColLin(gMat("R"), gMat("D"), 2, 2); //COL[2] R --> LIN[2] D
-                fantasma = tLinCol(fantasma, gMat("L"), 2, 0); //LIN[2] D --> COL[0] L
-                fantasma = tColLin(fantasma, gMat("U"), 0, 2); //COL[0] L --> LIN[2] U
-                tLinCol(fantasma, gMat("R"), 2, 2); //LIN[2] U --> COL[2] R
+                this.temp = tColLin(gMat("R"), gMat("D"), 2, 2); //COL[2] R --> LIN[2] D
+                this.temp = tLinCol(this.temp, gMat("L"), 2, 0); //LIN[2] D --> COL[0] L
+                this.temp = tColLin(this.temp, gMat("U"), 0, 2); //COL[0] L --> LIN[2] U
+                tLinCol(this.temp, gMat("R"), 2, 2); //LIN[2] U --> COL[2] R
                 break;
             case "F":
-                fantasma = tColLin(gMat("R"), gMat("U"), 0, 0); //COL[0] R --> LIN[0] U 
-                fantasma = tLinCol(fantasma, gMat("L"), 0, 2); //LIN[0] U --> COL[2] L
-                fantasma = tColLin(fantasma, gMat("D"), 2, 0); //COL[2] L --> LIN[0] D
-                tLinCol(fantasma, gMat("R"), 0, 0); //LIN[0] D --> COL[0] R
+                this.temp = tColLin(gMat("R"), gMat("U"), 0, 0); //COL[0] R --> LIN[0] U 
+                this.temp = tLinCol(this.temp, gMat("L"), 0, 2); //LIN[0] U --> COL[2] L
+                this.temp = tColLin(this.temp, gMat("D"), 2, 0); //COL[2] L --> LIN[0] D
+                tLinCol(this.temp, gMat("R"), 0, 0); //LIN[0] D --> COL[0] R
                 break;
         }
     }
 
-    public int[][] gMat(String mat) {
-        return cores.get(matrizes.get(mat));
+    public boolean verificaCor(int cor) {
+        int count = 0;
+        for (int c : this.coresAdd) {
+            if (c == cor) {
+                count++;
+            }
+        }
+        return count < 9;
     }
 
-    public int[][] copyM(int[][] destino) {
+    //Resolução
+    public void resolver(int limite) {
+        int passo = 1;
+        while (!this.isResolvido() && passo < limite) {
+            int face = Utils.randInt(0, 5);
+            int direcao = Utils.randInt(0, 1);
+            this.mover(this.getNomeFace(face), this.getNomeDirecao(direcao));
+            System.out.println("Passo " + (passo++) + ":");
+            this.print();
+        }
+        if (this.isResolvido()) {
+            System.out.println("O cubo foi resolvido em " + passo + " tentativa(s)!");
+        } else {
+            System.out.println("Sem resolução após " + passo + " tentativas.");
+        }
+    }
+
+    public boolean isResolvido() {
+        int cs = this.cores.size();
+        for (int i = 0; i < cs; i++) {
+            int[][] m = this.cores.get(i); //face
+            int primeira = m[0][0];
+            for (int j = 0; j < 3; j++) { //linha
+                for (int k = 0; k < 3; k++) { //coluna
+                    if (m[j][k] != primeira) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    //Impressão
+    public void print() {
+        this.imp.printarEstado(this);
+    }
+
+    //Operações com matrizes
+    public int[][] gMat(String mat) {
+        return this.cores.get(this.matrizes.get(mat));
+    }
+
+    public int[][] cMat(int[][] destino) {
         int[][] aux = new int[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -207,24 +257,8 @@ public class Cubo {
         return aux;
     }
 
-    public int[][] passaLinha(int[][] origem, int[][] destino, int lin) {
-        int[][] aux = copyM(destino);
-        for (int i = 0; i < 3; i++) {
-            destino[lin][i] = origem[lin][i];
-        }
-        return aux;
-    }
-
-    public int[][] passaLinha(int[][] origem, int[][] destino, int linOrig, int linDest) {
-        int[][] aux = copyM(destino);
-        for (int i = 0; i < 3; i++) {
-            destino[linDest][i] = origem[linOrig][i];
-        }
-        return aux;
-    }
-
     public int[][] passaColuna(int[][] origem, int[][] destino, int col) {
-        int[][] aux = copyM(destino);
+        int[][] aux = cMat(destino);
         for (int i = 0; i < 3; i++) {
             destino[i][col] = origem[i][col];
         }
@@ -232,15 +266,31 @@ public class Cubo {
     }
 
     public int[][] passaColuna(int[][] origem, int[][] destino, int colOrig, int colDest) {
-        int[][] aux = copyM(destino);
+        int[][] aux = cMat(destino);
         for (int i = 0; i < 3; i++) {
             destino[i][colDest] = origem[i][colOrig];
         }
         return aux;
     }
 
+    public int[][] passaLinha(int[][] origem, int[][] destino, int lin) {
+        int[][] aux = cMat(destino);
+        for (int i = 0; i < 3; i++) {
+            destino[lin][i] = origem[lin][i];
+        }
+        return aux;
+    }
+
+    public int[][] passaLinha(int[][] origem, int[][] destino, int linOrig, int linDest) {
+        int[][] aux = cMat(destino);
+        for (int i = 0; i < 3; i++) {
+            destino[linDest][i] = origem[linOrig][i];
+        }
+        return aux;
+    }
+
     public int[][] tLinCol(int[][] origem, int[][] destino, int lin, int col) {
-        int[][] aux = copyM(destino);
+        int[][] aux = cMat(destino);
         for (int i = 0; i < 3; i++) {
             destino[i][col] = origem[lin][i];
         }
@@ -248,7 +298,7 @@ public class Cubo {
     }
 
     public int[][] tColLin(int[][] origem, int[][] destino, int col, int lin) {
-        int[][] aux = copyM(destino);
+        int[][] aux = cMat(destino);
         for (int i = 0; i < 3; i++) {
             destino[i][lin] = origem[col][i];
         }
